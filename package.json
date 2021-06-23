@@ -1,0 +1,32 @@
+{
+  "name": "ecom-auth-service",
+  "version": "1.0.0",
+  "description": "Auth service for ecom.com",
+  "main": "index.js",
+  "scripts": {
+    "start": "node dist/src/index.js",
+    "tslint-src": "tslint -c tslint.json -p tsconfig.src.json",
+    "build": "tsc -p tsconfig.src.json",
+    "dev": "npm run tslint-src && npm run build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Abhik Mehta",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@abhik017/ecom-express-server": "^1.2.0",
+    "@types/node": "^15.12.4",
+    "bcrypt": "^5.0.1",
+    "crypto": "^1.0.1",
+    "dotenv": "^10.0.0",
+    "express": "4.17.1",
+    "http-status": "^1.5.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.12.14",
+    "node-mailjet": "^3.3.4"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.0",
+    "@types/express": "^4.17.12",
+    "@types/jsonwebtoken": "^8.5.2"
+  }
+}
