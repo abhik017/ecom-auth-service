@@ -31,7 +31,7 @@ export class SignupController {
                 expiryTime: this.getExpiryTime(),
                 role: accountRole
             });
-            dbData.save( (err: any ) => {
+            await dbData.save( (err: any ) => {
                 if(err) {
                     throw err;
                 } else {

@@ -20,16 +20,17 @@ export class AccountVerificationController {
             });
             const time = new Date().getTime() / 1000;
             if(time <= expiryTime && enteredVerificationCode === verificationCode) {
-                userDetails.updateOne({email: accountEmail}, {isVerified: true});
-                response.status(httpStatus.OK);
-                response.send();
+                await userDetails.updateOne({email: accountEmail}, {isVerified: true}, undefined, function (err: any, res: any) {
+                    if(err) {
+                        response.status(httpStatus.INTERNAL_SERVER_ERROR).send();
+                    }
+                });
+                response.status(httpStatus.OK).send();
             } else {
-                console.log("The input verification code is either expired or is incorrect!");
-                response.status(httpStatus.UNAUTHORIZED);
-                response.send();
+                response.status(httpStatus.UNAUTHORIZED).send("The input verification code is either expired or is incorrect!");
             }
         } catch(err) {
-            response.status(400).send("This is an invalid request" + err.toString());
+            response.status(httpStatus.BAD_REQUEST).send("This is an invalid request. " + err.toString());
         }
     }
 }

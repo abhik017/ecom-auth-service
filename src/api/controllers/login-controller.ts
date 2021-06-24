@@ -17,12 +17,15 @@ export class LoginController {
                     return obj;
                 }
             });
-            const authorize: boolean = await comparePassword(password, fetchedAccountInfo.accountPassword);
+            let authorize: boolean = await comparePassword(password, fetchedAccountInfo.accountPassword);
+            authorize = authorize && fetchedAccountInfo.isVerified;
             if( !authorize ) {
-                throw "The email/password is invalid!";
+                throw "Either the account is not verified or the email/password is invalid!";
             }
             const accessToken = await this.signAccessToken(email, fetchedAccountInfo.role);
-            response.status(httpStatus.OK).send({ accessToken });
+            response.status(httpStatus.OK).send({ 
+                accessToken: accessToken,
+            });
         } catch(err) {
             console.log(err);
             response.status(httpStatus.UNAUTHORIZED).send(err.toString() + " Invalid credentials!");
@@ -33,7 +36,7 @@ export class LoginController {
     private async signAccessToken(userEmail: string, userRole: string) {
         return new Promise((resolve, reject) => {
             const payload = {
-                role: userRole
+                role: userRole // "vendor" or "customer"
             };
             const secret: string = process.env.ACCESS_TOKEN_SECRET as string;
             const options = {

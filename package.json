@@ -2,7 +2,7 @@
   "name": "@abhik017/ecom-auth-service",
   "version": "1.0.0",
   "description": "Auth service for ecom.com",
-  "main": "index.js",
+  "main": "dist/src/index.js",
   "scripts": {
     "start": "npm run build && node dist/src/index.js",
     "tslint-src": "tslint -c tslint.json -p tsconfig.src.json",
