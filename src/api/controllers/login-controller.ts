@@ -1,5 +1,5 @@
 import express from "express";
-import userDetails from "../models/signup-model";
+import userDetails from "../models/user-model";
 import { comparePassword } from "./password-util";
 import jwt = require("jsonwebtoken");
 import httpStatus = require("http-status");
@@ -10,27 +10,21 @@ export class LoginController {
             const inputAccountInfo = request.body;
             const password = inputAccountInfo.password;
             const email = inputAccountInfo.email;
-            const fetchedAccountInfo = await userDetails.findOne({email: email}, (err: any, obj: any) => {
-                if(err) {
-                    throw "The email/password is invalid!";
-                } else {
-                    return obj;
-                }
-            });
-            let authorize: boolean = await comparePassword(password, fetchedAccountInfo.accountPassword);
-            authorize = authorize && fetchedAccountInfo.isVerified;
-            if( !authorize ) {
-                throw "Either the account is not verified or the email/password is invalid!";
+            const fetchedAccountInfo = await userDetails.findOne({email: email});
+            const isAuthorized: boolean = await comparePassword(password, fetchedAccountInfo.accountPassword) && fetchedAccountInfo.isVerified;
+            if( !isAuthorized ) {
+                console.log("Either the account is not verified or the email/password is invalid!");
+                response.status(httpStatus.UNAUTHORIZED).send("Either the account is not verified or the email/password is invalid!");
+            } else {
+                const accessToken = await this.signAccessToken(email, fetchedAccountInfo.role);
+                response.status(httpStatus.OK).send({ 
+                    accessToken: accessToken
+                });
             }
-            const accessToken = await this.signAccessToken(email, fetchedAccountInfo.role);
-            response.status(httpStatus.OK).send({ 
-                accessToken: accessToken,
-            });
         } catch(err) {
             console.log(err);
             response.status(httpStatus.UNAUTHORIZED).send(err.toString() + " Invalid credentials!");
         }
-
     }
 
     private async signAccessToken(userEmail: string, userRole: string) {

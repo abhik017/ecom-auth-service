@@ -1,4 +1,4 @@
-import userDetails from "../models/signup-model";
+import userDetails from "../models/user-model";
 import sendVerificationCodeEmail from "./mail-util";
 import httpStatus = require("http-status");
 import express = require("express");
@@ -29,22 +29,16 @@ export class SignupController {
                 isVerified: false,
                 verificationCode: verificationCode,
                 expiryTime: this.getExpiryTime(),
-                role: accountRole
+                role: accountRole,
+                accountBalance: 0
             });
-            await dbData.save( (err: any ) => {
-                if(err) {
-                    throw err;
-                } else {
-                    console.log("New account details stored in database!");
-                }
-            });
-            sendVerificationCodeEmail(accountName, accountEmail, verificationCode).then( () => {
-                response.status(httpStatus.CREATED).send();
-            }).catch( (err: any) => {
-                throw err;
-            });
+            await dbData.save();
+            console.log("New account details stored in database!");
+            await sendVerificationCodeEmail(accountName, accountEmail, verificationCode)
+            response.status(httpStatus.CREATED)
+            .send("Account creation successful and email containing the verification code has been sent. If you did not recieve the email, please try again!");
         } catch(err) {
-            response.status(400).send("This is an invalid request!" + err.toString());
+            response.status(httpStatus.BAD_REQUEST).send("This is an invalid request!" + err.toString());
         }
     }
 
