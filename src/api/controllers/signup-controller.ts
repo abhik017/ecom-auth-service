@@ -14,7 +14,7 @@ export class SignupController {
             const accountRole: string = accountInfo.role;
             const hashedPassword: string = await hashPassword(accountPassword);
             if(!accountEmail || !accountName || !accountPassword || !accountRole ) {
-                throw "The fields are empty!";
+                throw "Some or all the fields are empty!";
             }
             const alreadyExists = await userDetails.findOne({email: accountEmail});
             if( alreadyExists ) {
@@ -34,7 +34,7 @@ export class SignupController {
             });
             await dbData.save();
             console.log("New account details stored in database!");
-            await sendVerificationCodeEmail(accountName, accountEmail, verificationCode)
+            await sendVerificationCodeEmail(accountName, accountEmail, verificationCode);
             response.status(httpStatus.CREATED)
             .send("Account creation successful and email containing the verification code has been sent. If you did not recieve the email, please try again!");
         } catch(err) {
