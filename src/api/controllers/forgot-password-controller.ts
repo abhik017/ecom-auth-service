@@ -56,7 +56,7 @@ export class ForgotPasswordController {
                 throw "Either the input is invalid or is insufficient to process the request!";
             }
             this.validatePassword(accountPassword);
-            jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET as string, async(err, payload) => {
+            jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET as string, async(err: any, payload: any) => {
                 if(err) {
                     response.status(httpStatus.UNAUTHORIZED).send("The user is unauthorized!");
                 } else {

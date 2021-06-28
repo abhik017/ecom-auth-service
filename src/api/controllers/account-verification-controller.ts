@@ -13,7 +13,7 @@ export class AccountVerificationController {
             const { verificationCode, expiryTime } = await userDetails.findOne({email: accountEmail});
             const time = new Date().getTime() / 1000;
             if( time <= expiryTime && enteredVerificationCode === verificationCode ) {
-                await userDetails.updateOne( {email: accountEmail}, { isVerified: true } );
+                await userDetails.updateOne( {email: accountEmail}, { isVerified: true, expiryTime: Date.now() } );
                 response.status(httpStatus.OK).send("Account has been verified!");
             } else {
                 response.status(httpStatus.UNAUTHORIZED).send("The input verification code is either expired or is incorrect!");

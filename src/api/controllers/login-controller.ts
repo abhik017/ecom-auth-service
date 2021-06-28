@@ -18,7 +18,8 @@ export class LoginController {
             } else {
                 const accessToken = await this.signAccessToken(email, fetchedAccountInfo.role);
                 response.status(httpStatus.OK).send({ 
-                    accessToken: accessToken
+                    accessToken: accessToken,
+                    role: fetchedAccountInfo.role
                 });
             }
         } catch(err) {
@@ -34,7 +35,7 @@ export class LoginController {
             };
             const secret: string = process.env.ACCESS_TOKEN_SECRET as string;
             const options = {
-                expiresIn: "1h",
+                expiresIn: "1d",
                 issuer: "e-com.com",
                 audience: userEmail
             };
